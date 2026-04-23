@@ -1,4 +1,4 @@
-.PHONY: all venv run test test-only perf clean
+.PHONY: all venv run test test-only perf playtest clean
 
 # Pure-Python engine — no bootstrap / SWIG step needed. `make all` still
 # installs deps so a fresh clone reaches "ready to play" in one command.
@@ -23,6 +23,10 @@ test-only: venv
 # Perf baseline.
 perf: venv
 	.venv/bin/python -m tests.perf
+
+# Scripted playtest — boot / eat / pause / stats / quit, with SVGs.
+playtest: venv
+	.venv/bin/python -m tests.playtest
 
 clean:
 	rm -rf .venv *.egg-info tests/out/*.svg tests/out/*.png

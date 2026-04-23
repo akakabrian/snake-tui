@@ -195,9 +195,10 @@ class Game:
         # 3. Collision detection.
         # First: wall (only meaningful when wrap is off).
         for i, s in enumerate(self.snakes):
-            if not s.alive or new_heads[i] is None:
+            nh = new_heads[i]
+            if not s.alive or nh is None:
                 continue
-            nx, ny = new_heads[i]  # type: ignore[misc]
+            nx, ny = nh
             if not self.wrap:
                 if nx < 0 or nx >= self.width or ny < 0 or ny >= self.height:
                     s.alive = False
@@ -218,9 +219,9 @@ class Game:
         # exclude each snake's own last cell from the self-collision set
         # if that snake isn't growing this tick.
         for i, s in enumerate(self.snakes):
-            if not s.alive or new_heads[i] is None:
-                continue
             head_cell = new_heads[i]
+            if not s.alive or head_cell is None:
+                continue
             # Build the "blocked" set for this snake.
             blocked: set[tuple[int, int]] = set()
             for j, other in enumerate(self.snakes):
@@ -239,9 +240,9 @@ class Game:
         ate_any = False
         eaten_by: list[int] = []
         for i, s in enumerate(self.snakes):
-            if not s.alive or new_heads[i] is None:
+            new_head = new_heads[i]
+            if not s.alive or new_head is None:
                 continue
-            new_head = new_heads[i]  # type: ignore[assignment]
             s.body.insert(0, new_head)
             if self.food is not None and new_head == self.food:
                 s.score += self.food_value
