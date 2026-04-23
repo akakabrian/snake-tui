@@ -28,6 +28,7 @@ from textual.widgets import Footer, Header, Static
 
 from . import tiles
 from . import state as state_mod
+from . import rl_hooks
 from .engine import Game, HEADINGS
 from .screens import ConfirmScreen, GameOverScreen, StatsScreen
 from .sounds import Sounds
@@ -618,6 +619,19 @@ class SnakeApp(App):
             f"[bold {'green' if on else 'yellow'}]"
             f"sound {'on' if on else 'off'}[/]"
         )
+
+    # --- RL exposure (side-effect-free) -------------------------------
+
+    def game_state_vector(self):
+        """Flat np.float32 vector — canonical state for RL agents."""
+        return rl_hooks.state_vector(self.game)
+
+    def game_reward(self, prev_score: int, prev_alive: bool) -> float:
+        """Incremental reward since the last step."""
+        return rl_hooks.compute_reward(prev_score, prev_alive, self.game)
+
+    def is_terminal(self) -> bool:
+        return rl_hooks.is_terminal(self.game)
 
     def action_stats(self) -> None:
         if self.help_overlay.display:
