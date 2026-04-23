@@ -633,6 +633,12 @@ class SnakeApp(App):
     def is_terminal(self) -> bool:
         return rl_hooks.is_terminal(self.game)
 
+    def reset_game(self) -> None:
+        """Reset the underlying engine to a fresh episode. Side-effect-free
+        w.r.t. scoreboard state (best-scores preserved). Used by RL envs."""
+        self.game.new_game()
+        self._game_over_shown = False
+
     def action_stats(self) -> None:
         if self.help_overlay.display:
             self._hide_help()
